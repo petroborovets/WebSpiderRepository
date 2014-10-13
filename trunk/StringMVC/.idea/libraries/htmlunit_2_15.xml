@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="htmlunit-2.15">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/target/StringMVC/WEB-INF/lib/htmlunit-2.15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/StringMVC/WEB-INF/lib/htmlunit-core-js-2.15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/StringMVC/WEB-INF/lib/httpclient-4.3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/StringMVC/WEB-INF/lib/httpcore-4.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/StringMVC/WEB-INF/lib/httpmime-4.3.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

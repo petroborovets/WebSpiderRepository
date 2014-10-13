@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+    <definition name="navBar" template="/WEB-INF/layout/navBar.jsp"/>
+
+    <definition name="common" template="/WEB-INF/layout/classic.jsp">
+        <put-attribute name="navBar" value="/WEB-INF/layout/navBar.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/layout/footer.jsp" />
+    </definition>
+
+    <definition name="index" extends="common">
+        <put-attribute name="title" value="Spider" />
+        <put-attribute name="body" value="/WEB-INF/pages/index.jsp"/>
+    </definition>
+
+    <definition name="jobolizer" extends="common">
+        <put-attribute name="title" value="Jobolizer Home" />
+        <put-attribute name="body" value="/WEB-INF/pages/jobolizer.jsp"/>
+    </definition>
+
+    <definition name="jobolizerBundleDetails" extends="common">
+        <put-attribute name="title" value="Bundle Details" />
+        <put-attribute name="body" value="/WEB-INF/pages/jobolizerBundleDetails.jsp"/>
+    </definition>
+
+</tiles-definitions>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="JobolizerString:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="StringMVC.war">
+      <element id="artifact" artifact-name="JobolizerString:war exploded" />
+    </root>
+  </artifact>
+</component>
