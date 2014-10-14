@@ -1,7 +1,7 @@
 package com.softserveinc.Test;
 
 import com.softserveinc.Component.DBComponent;
-import com.softserveinc.Component.JobolizerComponent;
+import com.softserveinc.Component.Jobolizer.JobolizerComponent;
 import com.softserveinc.DAO.CommonUrlTableDAO;
 import com.softserveinc.DTO.SpiderResultDTO;
 

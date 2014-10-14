@@ -1,8 +1,10 @@
 package com.softserveinc.Component.Google;
 
 import com.google.gson.Gson;
+import com.softserveinc.Component.DBComponent;
 import com.softserveinc.Entity.GoogleEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Created by petroborovets on 10/9/14.
  */
-@Component
+@Service
 public class GoogleComponent {
     private String searchString;
     private int numberOfResults;
@@ -37,7 +39,7 @@ public class GoogleComponent {
         this.numberOfResults = numberOfResults;
     }
 
-    GoogleComponent() {
+    public GoogleComponent() {
     }
 
     public GoogleComponent(String searchString, int numberOfResults) {

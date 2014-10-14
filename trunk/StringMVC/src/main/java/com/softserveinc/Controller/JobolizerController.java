@@ -1,7 +1,7 @@
 package com.softserveinc.Controller;
 
 import com.softserveinc.Component.Jobolizer.JobolizerUtilities;
-import com.softserveinc.Component.JobolizerComponent;
+import com.softserveinc.Component.Jobolizer.JobolizerComponent;
 import com.softserveinc.DAO.CommonUrlTableDAO;
 import com.softserveinc.DAO.JobolizerDAO;
 import com.softserveinc.DTO.JobolizerResourceDTO;

@@ -94,6 +94,11 @@ public class DBComponent {
     public static final String jobolizerLatitudeFieldName = "latitude";
     public static final String jobolizerLongitudeFieldName = "longitude";
     public static final String jobolizerVacancyURL = "vacancy_url";
+    // GoogleApi table
+    public static final String tbl_google_api = "tbl_google_api";
+    public static final String googleApiIdFieldName = "id";
+    public static final String googleApiUrlFieldName = "url";
+    public static final String googleApiUrlDescriptionFieldName = "url_description";
 
     public DBComponent() {
 
@@ -141,6 +146,49 @@ public class DBComponent {
             }//end try
         }//end finally
     }//end createDatabase()
+
+    public void createGoogleApiTable() {
+        String createTblGoogleApi =
+                "CREATE TABLE IF NOT EXISTS " + tbl_google_api + " (" +
+                        "  " + googleApiIdFieldName + " INTEGER NOT NULL AUTO_INCREMENT," +
+                        "  " + googleApiUrlFieldName + " VARCHAR(850) DEFAULT NULL," +
+                        "  " + googleApiUrlDescriptionFieldName + " VARCHAR(200) DEFAULT NULL," +
+                        "  PRIMARY KEY (" + googleApiIdFieldName + ")" +
+                        ");";
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.createStatement();
+
+            statement.execute(selectDatabase);
+            System.out.println("Creating google table...");
+            statement.execute(createTblGoogleApi);
+
+            System.out.println("Google table created successfully...");
+
+        } catch (SQLException e) {
+            System.out.println("Cant execute sql for google table creation. ");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Cant get JDBC driver. ");
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+            } catch (SQLException se2) {
+                System.out.println("Problems with closing statement with google sql. ");
+            }
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException se) {
+                System.out.println("Problems with closing connection with google sql. ");
+                se.printStackTrace();
+            }//end try
+        }
+    }
 
     public void createJobolizerTables() {
         String createTblJobolizer =

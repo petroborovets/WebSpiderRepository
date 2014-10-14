@@ -2,30 +2,33 @@ package com.softserveinc.Test;
 
 
 
-import com.softserveinc.Component.JobolizerComponent;
-import com.softserveinc.DTO.SpiderResultDTO;
-import com.softserveinc.Entity.JobolizerEntity;
+import com.softserveinc.DAO.GoogleDAO;
+import com.softserveinc.DTO.GoogleOutputLocationDTO;
+import com.softserveinc.Entity.GoogleEntity;
 
-import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by petroborovets on 10/4/14.
  */
 public class Test2 {
-    public static void main(String[] args) throws IOException {
-        JobolizerEntity jobolizerEntity = new JobolizerEntity();
+    public static void main(String[] args) {
 
-        JobolizerComponent jobolizerComponent = new JobolizerComponent();
+        ArrayList<GoogleEntity> googleEntities = new ArrayList<GoogleEntity>();
+
+        GoogleOutputLocationDTO googleOutputLocationDTO = new GoogleOutputLocationDTO();
+        googleOutputLocationDTO.setIdFieldName("stellen_links_key");
+        googleOutputLocationDTO.setTableName("Jobboerse_Anaesthesiologie_stellen_links");
+        googleOutputLocationDTO.setUrlFieldName("stelle_url");
+
+        GoogleDAO googleDAO = new GoogleDAO();
+
         try {
-            jobolizerComponent.collectURLData("http://www.xn--jobbrse-d1a.com/jobdetail.php?rid=73615082&qid=36120&fid=6&type=premium&from=Lz9hY3Rpb249c3RlbGxlbmFuZ2Vib3RlLWpvYnMmaj1waHAmcz0mY291bnRyeT0=&m=d41d8cd98f00b204e9800998ecf8427e",0,new SpiderResultDTO());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            googleEntities = googleDAO.getAllElementsFromSpecifiedTable(googleOutputLocationDTO);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        System.out.println();
-        System.out.println();
     }
 }

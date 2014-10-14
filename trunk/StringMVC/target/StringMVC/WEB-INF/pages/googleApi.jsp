@@ -37,7 +37,7 @@
                         </div>
                         <div class="input-group searchString" style="margin-bottom:5px">
                             <span class="input-group-addon">Search string</span>
-                            <form:input class="form-control" id="idFieldNameId" path="idFieldName" placeholder="What are you looking for?" />
+                            <form:input class="form-control" id="idFieldNameId" path="searchString" placeholder="What are you looking for?" />
                         </div>
 
                     </form:form>
@@ -49,11 +49,11 @@
         <div class="col-lg-8">
                 <div class="panel panel-info">
                     <div class="panel-heading">Google results</div>
-                    <div class="panel-body" style="max-height: 239px;overflow-y: scroll;">
+                    <div class="panel-body" style="max-height: 220px;overflow-y: scroll;">
                         <c:choose>
                             <c:when test="${spiderResultsDTO != null}">
                                 <c:forEach items="${spiderResultsDTO.urlResultList}" var="resultInfo">
-                                    <p><strong>Vacancy: </strong><a><c:out value="${resultInfo.vacancyURL}"/></a></p>
+                                    <p><strong>URL: </strong><a><c:out value="${resultInfo.vacancyURL}"/></a></p>
                                     <c:choose>
                                         <c:when test="${resultInfo.error == true}">
                                             <p> <code>Error: <c:out value="${resultInfo.errorDescription}"/> </code></p>
@@ -65,7 +65,7 @@
                                 </c:forEach>
                                 <br>
                                 <strong>Conclusion:</strong>
-                                <p><mark>Google successfully saved <c:out value="${spiderResultsDTO.numberOfURLsSaved}"/>/<c:out value="${spiderResultsDTO.numberOfURLsSendToJobolizer}"/> vacancies.</mark></p>
+                                <p><mark>Google successfully saved <c:out value="${spiderResultsDTO.numberOfURLsSaved}"/>/<c:out value="${spiderResultsDTO.numberOfURLsSendToJobolizer}"/> URLs.</mark></p>
                             </c:when>
                             <c:otherwise>
                                 No results yet.
