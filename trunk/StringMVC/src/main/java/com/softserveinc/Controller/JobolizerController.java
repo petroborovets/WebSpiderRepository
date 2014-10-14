@@ -4,10 +4,9 @@ import com.softserveinc.Component.Jobolizer.JobolizerUtilities;
 import com.softserveinc.Component.JobolizerComponent;
 import com.softserveinc.DAO.CommonUrlTableDAO;
 import com.softserveinc.DAO.JobolizerDAO;
-import org.apache.http.HttpEntity;
 import com.softserveinc.DTO.JobolizerResourceDTO;
-import com.softserveinc.DTO.JobolizerResultDTO;
-import com.softserveinc.DTO.JobolizerResultsDTO;
+import com.softserveinc.DTO.SpiderResultDTO;
+import com.softserveinc.DTO.SpiderResultsDTO;
 import com.softserveinc.Entity.JobolizerEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -30,31 +28,25 @@ public class JobolizerController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String getWelcomePage(ModelMap model) {
 
-        // Getting analyzed data from DB
-        JobolizerDAO jobolizerDAO = new JobolizerDAO();
-        ArrayList<JobolizerEntity> jobolizerEntities = null;
-        try {
-            jobolizerEntities = jobolizerDAO.getAllElements();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        ArrayList<JobolizerEntity> jobolizerEntities = new JobolizerUtilities().getAllJobolizerVacanciesFromDB();
+
         if (jobolizerEntities != null)
             model.addAttribute("jobolizerBundles", jobolizerEntities);
 
         // Jobolizer result
-        JobolizerResultsDTO jobolizerResultsDTO = new JobolizerResultsDTO();
-        jobolizerResultsDTO.setError(false);
-        jobolizerResultsDTO.setNumberOfURLsSaved(5);
-        jobolizerResultsDTO.setNumberOfURLsSendToJobolizer(5);
+        SpiderResultsDTO spiderResultsDTO = new SpiderResultsDTO();
+        spiderResultsDTO.setError(false);
+        spiderResultsDTO.setNumberOfURLsSaved(5);
+        spiderResultsDTO.setNumberOfURLsSendToJobolizer(5);
 
-        JobolizerResultDTO jobolizerResultDTO = new JobolizerResultDTO();
-        jobolizerResultDTO.setId(5);
-        jobolizerResultDTO.setError(false);
-        jobolizerResultDTO.setVacancyURL("apple.com");
-        ArrayList<JobolizerResultDTO> jobolizerResultDTOs = new ArrayList<JobolizerResultDTO>();
-        jobolizerResultDTOs.add(jobolizerResultDTO);
+        SpiderResultDTO spiderResultDTO = new SpiderResultDTO();
+        spiderResultDTO.setId(5);
+        spiderResultDTO.setError(false);
+        spiderResultDTO.setVacancyURL("apple.com");
+        ArrayList<SpiderResultDTO> spiderResultDTOs = new ArrayList<SpiderResultDTO>();
+        spiderResultDTOs.add(spiderResultDTO);
 
-        jobolizerResultsDTO.setUrlResultList(jobolizerResultDTOs);
+        spiderResultsDTO.setUrlResultList(spiderResultDTOs);
 
         //model.addAttribute("jobolizerResultsDTO", jobolizerResultsDTO);
         model.addAttribute("jobolizerBundle", new JobolizerEntity());
@@ -71,8 +63,8 @@ public class JobolizerController {
             , ModelMap model) {
 
         // Result dtos to display info on page
-        JobolizerResultsDTO jobolizerResultsDTO = new JobolizerResultsDTO();
-        ArrayList<JobolizerResultDTO> jobolizerResultDTOs = new ArrayList<JobolizerResultDTO>();
+        SpiderResultsDTO spiderResultsDTO = new SpiderResultsDTO();
+        ArrayList<SpiderResultDTO> spiderResultDTOs = new ArrayList<SpiderResultDTO>();
 
         // Getting Data to jobolize
         String tableName = jobolizerResourceDTO.getTableName();
@@ -80,7 +72,7 @@ public class JobolizerController {
         String idFieldName = jobolizerResourceDTO.getIdFieldName();
         long idFrom = jobolizerResourceDTO.getIdFrom();
         long idTo = jobolizerResourceDTO.getIdTo();
-        jobolizerResultsDTO.setNumberOfURLsSendToJobolizer(idTo - idFrom);
+        spiderResultsDTO.setNumberOfURLsSendToJobolizer(idTo - idFrom);
 
         JobolizerComponent jobolizerComponent = new JobolizerComponent();
         CommonUrlTableDAO commonUrlTableDAO = new CommonUrlTableDAO(tableName, idFieldName, urlFieldName);
@@ -92,51 +84,46 @@ public class JobolizerController {
             if (urlsToJobolize.size() == 0)
                 throw new NullPointerException("Error: Jobolizer failed getting urls to analyze (urls.size = 0 || urls = null).");
         } catch (SQLException e) {
-            jobolizerResultsDTO.setError(true);
-            jobolizerResultsDTO.setErrorDescription(e.getMessage());
+            spiderResultsDTO.setError(true);
+            spiderResultsDTO.setErrorDescription("SQLException, cant get urls from table:" + tableName);
             System.out.println("Error: Jobolizer failed getting urls to analyze (SQLException).");
             e.printStackTrace();
         } catch (NullPointerException e) {
-            jobolizerResultsDTO.setError(true);
-            jobolizerResultsDTO.setErrorDescription(e.getMessage());
+            spiderResultsDTO.setError(true);
+            spiderResultsDTO.setErrorDescription("URLs in table "+tableName+" with that id does not exist!");
         }
 
         int num = 0; // Olegs change
         for (String url : urlsToJobolize) {
-            JobolizerResultDTO jobolizerResultDTO = new JobolizerResultDTO();
-            jobolizerResultDTO.setVacancyURL(url);
-            jobolizerResultDTO.setError(false);
+            SpiderResultDTO spiderResultDTO = new SpiderResultDTO();
+            spiderResultDTO.setVacancyURL(url);
+            spiderResultDTO.setError(false);
 
             url = url.replaceAll("jobbörse", "xn--jobbrse-d1a");
             try {
-                jobolizerComponent.collectURLData(url, num, jobolizerResultDTO);
+                jobolizerComponent.collectURLData(url, num, spiderResultDTO);
             } catch (Exception e) {
-                jobolizerResultDTO.setError(true);
-                jobolizerResultDTO.setErrorDescription(e.getMessage());
+                spiderResultDTO.setError(true);
+                spiderResultDTO.setErrorDescription(e.getMessage());
                 System.out.println("Error: Jobolizer can't analyze url:" + url);
                 e.printStackTrace();
             }
             //Adding to array
-            jobolizerResultDTOs.add(jobolizerResultDTO);
+            spiderResultDTOs.add(spiderResultDTO);
         }
         // Count successful
-        jobolizerResultsDTO.setNumberOfURLsSaved(new JobolizerUtilities().getNumberOfSuccessfulResults(jobolizerResultDTOs));
+        spiderResultsDTO.setNumberOfURLsSaved(new JobolizerUtilities().getNumberOfSuccessfulResults(spiderResultDTOs));
 
         // Add data of each resoult
-        jobolizerResultsDTO.setUrlResultList(jobolizerResultDTOs);
+        spiderResultsDTO.setUrlResultList(spiderResultDTOs);
 
         // Getting analyzed data from DB
-        JobolizerDAO jobolizerDAO = new JobolizerDAO();
-        ArrayList<JobolizerEntity> jobolizerEntities = null;
-        try {
-            jobolizerEntities = jobolizerDAO.getAllElements();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        ArrayList<JobolizerEntity> jobolizerEntities = new JobolizerUtilities().getAllJobolizerVacanciesFromDB();
+
         if (jobolizerEntities != null)
             model.addAttribute("jobolizerBundles", jobolizerEntities);
 
-        model.addAttribute("jobolizerResultsDTO", jobolizerResultsDTO);
+        model.addAttribute("jobolizerResultsDTO", spiderResultsDTO);
         model.addAttribute("jobolizerBundle", new JobolizerEntity());
         model.addAttribute("jobolizerResourceDTO", new JobolizerResourceDTO());
         if (jobolizerEntities != null && jobolizerEntities.size() != 0)
@@ -171,12 +158,9 @@ public class JobolizerController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        ArrayList<JobolizerEntity> jobolizerEntities = null;
-        try {
-            jobolizerEntities = jobolizerDAO.getAllElements();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        ArrayList<JobolizerEntity> jobolizerEntities = new JobolizerUtilities().getAllJobolizerVacanciesFromDB();
+
         if (jobolizerEntities != null)
             model.addAttribute("jobolizerBundles", jobolizerEntities);
 
@@ -196,15 +180,13 @@ public class JobolizerController {
             System.out.println("Can't delete this element!");
             e.printStackTrace();
         }
-        ArrayList<JobolizerEntity> jobolizerEntities = null;
-        try {
-            jobolizerEntities = jobolizerDAO.getAllElements();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        ArrayList<JobolizerEntity> jobolizerEntities = new JobolizerUtilities().getAllJobolizerVacanciesFromDB();
+
         if (jobolizerEntities != null)
             model.addAttribute("jobolizerBundles", jobolizerEntities);
 
+        model.addAttribute("jobolizerResourceDTO", new JobolizerResourceDTO());
         model.addAttribute("message", "Vacancy(" + id + ") deleted successfully");
         model.addAttribute("jobolizerBundle", new JobolizerEntity());
 

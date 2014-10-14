@@ -106,12 +106,12 @@
                     <thead>
                         <tr>
                             <td style="text-align: left; width: 6%"><b>#</b></td>
-                            <td style="text-align: center; width: 19%"><b>jobTitle1</b></td>
-                            <td style="text-align: center; width: 20%"><b>companyName</b></td>
-                            <td style="text-align: center; width: 37%"><b>companyUrl</b></td>
-                            <td style="text-align: center; width: 6%"><b>details</b></td>
-                            <td style="text-align: center; width: 6%"><b>edit</b></td>
-                            <td style="text-align: center; width: 6%"><b>delete</b></td>
+                            <td style="text-align: center; width: 19%"><b>Job Title 1</b></td>
+                            <td style="text-align: center; width: 20%"><b>Company Name</b></td>
+                            <td style="text-align: center; width: 37%"><b>Company Url</b></td>
+                            <td style="text-align: center; width: 6%"><b>Details</b></td>
+                            <td style="text-align: center; width: 6%"><b>Edit</b></td>
+                            <td style="text-align: center; width: 6%"><b>Delete</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -122,7 +122,7 @@
                                 <td style="text-align: center;"><c:out value="${jBundle.companyName}"/></td>
                                 <td style="text-align: center; margin:auto"><c:out value="${jBundle.companyUrl}"/></td>
                                 <td style="text-align: center;"><a href="/jobolizer/showBundle/${jBundle.id}"><span class="glyphicon glyphicon-zoom-in"></span></a></td>
-                                <td style="text-align: center;"><a href=""><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                <td style="text-align: center;" disabled><a href="#"><span class="glyphicon glyphicon-pencil"></span></a></td>
                                 <td style="text-align: center;"><a href="/jobolizer/deleteBundle/${jBundle.id}"><span class="glyphicon glyphicon-trash"></span></a></td>
                             </tr>
                         </c:forEach>

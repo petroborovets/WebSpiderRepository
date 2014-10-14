@@ -1,9 +1,11 @@
 package com.softserveinc.Component.Jobolizer;
 
-import com.softserveinc.DTO.JobolizerResultDTO;
+import com.softserveinc.DAO.JobolizerDAO;
+import com.softserveinc.DTO.SpiderResultDTO;
 import com.softserveinc.Entity.JobolizerEntity;
 import org.springframework.stereotype.Component;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -11,14 +13,25 @@ import java.util.ArrayList;
  */
 @Component
 public class JobolizerUtilities {
-    public int getNumberOfSuccessfulResults(ArrayList<JobolizerResultDTO> jobolizerResultDTOs) {
+    public int getNumberOfSuccessfulResults(ArrayList<SpiderResultDTO> spiderResultDTOs) {
         int numberOfSuccessful = 0;
 
-        for (JobolizerResultDTO jobolizerResultDTO : jobolizerResultDTOs) {
-            if (!jobolizerResultDTO.isError())
+        for (SpiderResultDTO spiderResultDTO : spiderResultDTOs) {
+            if (!spiderResultDTO.isError())
                 numberOfSuccessful++;
         }
         return numberOfSuccessful;
+    }
+
+    public ArrayList<JobolizerEntity> getAllJobolizerVacanciesFromDB() {
+        JobolizerDAO jobolizerDAO = new JobolizerDAO();
+        ArrayList<JobolizerEntity> jobolizerEntities = null;
+        try {
+            jobolizerEntities = jobolizerDAO.getAllElements();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return jobolizerEntities;
     }
 
     public boolean isNotEmptyBundle(JobolizerEntity jobolizerEntity) {

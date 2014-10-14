@@ -7,7 +7,7 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.softserveinc.DAO.JobolizerDAO;
-import com.softserveinc.DTO.JobolizerResultDTO;
+import com.softserveinc.DTO.SpiderResultDTO;
 import com.softserveinc.Entity.JobolizerEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -83,7 +83,7 @@ public class JobolizerComponent {
         return realVacancyUrl;
     }
 
-    public void collectURLData(String vacancyURL, int num, JobolizerResultDTO jobolizerResultDTO) throws IOException, InterruptedException, SQLException {
+    public void collectURLData(String vacancyURL, int num, SpiderResultDTO spiderResultDTO) throws IOException, InterruptedException, SQLException {
 
         if (vacancyURL.startsWith("http://www.jobbörse.com") || vacancyURL.contains("xn--jobbrse-d1a")) {
 
@@ -109,7 +109,7 @@ public class JobolizerComponent {
         // Request parameters and other properties.
         List<NameValuePair> params = new ArrayList<NameValuePair>(2);
         params.add(new BasicNameValuePair("url", vacancyURL));
-        httppost.setEntity(entity);
+        httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
         //Execute and get the response.
         HttpResponse response = httpclient.execute(httppost);
@@ -121,10 +121,15 @@ public class JobolizerComponent {
         }
 
         String responsePage = builder.toString();
-        extractDataFromPage(responsePage, vacancyURL, jobolizerResultDTO);
+        if (responsePage.contains("Sorry, an error occured while processing document(s).")) {
+            spiderResultDTO.setError(true);
+            spiderResultDTO.setErrorDescription("Jobolizer cant analyze this page, check if page exists.");
+            return;
+        }
+        extractDataFromPage(responsePage, vacancyURL, spiderResultDTO);
     }
 
-    public void extractDataFromPage(String htmlPage, String vacancyURL, JobolizerResultDTO jobolizerResultDTO) throws SQLException, IOException, InterruptedException {
+    public void extractDataFromPage(String htmlPage, String vacancyURL, SpiderResultDTO spiderResultDTO) throws SQLException, IOException, InterruptedException {
         //WebClient webClient = new WebClient(BrowserVersion.CHROME);
         Document doc = Jsoup.parse(htmlPage);
         Elements leftDivElements = doc.getElementsByClass("left");
@@ -150,14 +155,14 @@ public class JobolizerComponent {
         }
         System.out.println("Saving jobolizer(" + jobolizerEntity.getId() + ") to DB");
         JobolizerDAO jobolizerDAO = new JobolizerDAO();
-        jobolizerDAO.addElement(jobolizerEntity, jobolizerResultDTO);
+        jobolizerDAO.addElement(jobolizerEntity, spiderResultDTO);
 
         if (jobolizerEntity.getId() == 0) {
             //jobolizerResultDTO.setError(true);
-            if (jobolizerResultDTO.getErrorDescription()!=null) {
-                String errorDescription = jobolizerResultDTO.getErrorDescription();
-                jobolizerResultDTO.setErrorDescription(errorDescription+"Jobolizer vacancy was not saved in DB. ");
-            } else jobolizerResultDTO.setErrorDescription("Jobolizer vacancy was not saved in DB. ");
+            if (spiderResultDTO.getErrorDescription()!=null) {
+                String errorDescription = spiderResultDTO.getErrorDescription();
+                spiderResultDTO.setErrorDescription(errorDescription+"Jobolizer vacancy was not saved in DB. ");
+            } else spiderResultDTO.setErrorDescription("Jobolizer vacancy was not saved in DB. ");
         }
     }
 
@@ -305,6 +310,7 @@ public class JobolizerComponent {
         } else if (leftKeyWord.equals("URL des Arbeitgebers")) {
             jobolizerEntity.setCompanyUrl(rightKeyWord);
         }
+
     }
 
     private void createDBAndTable() {

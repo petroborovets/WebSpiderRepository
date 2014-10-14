@@ -37,15 +37,15 @@
             <a href="#" class = "btn btn-default">Start Crawl</a>
         </div>
         <div class = "col-md-3">
-            <h3><a href="/jobolizer/">Jobolizer</a></h3>
+            <h3><a href='<spring:url value="/jobolizer/"/>'>Jobolizer</a></h3>
             <p>Module uses <a href="http://jobolizer.com">jobolizer.com</a> to collect and parse data. Job ads can be extracted from complex HTML pages. Direct processing of newspaper advertisements. Processes all common document formats (also scanned documents). Multi-language capabilities (more than 30 languages).</p>
             <a href="/jobolizer/" class = "btn btn-default">Start Jobolizer</a>
 
         </div>
         <div class = "col-md-3">
-            <h3><a href="#">Google API</a></h3>
+            <h3><a href='<spring:url value="/googleApi/"/>'>Google API</a></h3>
             <p>Module is based on Google API. Uses google engine to find links needed.</p>
-            <a href="#" class = "btn btn-default">Go Googling</a>
+            <a href=<a href='<spring:url value="/googleApi/"/>' class = "btn btn-default">Go Googling</a>
 
         </div>
         <div class = "col-md-3">

@@ -23,7 +23,7 @@
                 <li class="home"><a href='<spring:url value="/"/>'>Home</a></li>
                 <li class="crawler"><a href="#">Crawler</a></li>
                 <li class="jobolizer"><a href='<spring:url value="/jobolizer/"/>'>Jobolizer</a></li>
-                <li class="googleAPI"><a href="#">GoogleAPI</a></li>
+                <li class="googleAPI"><a href='<spring:url value="/googleApi/"/>'>GoogleAPI</a></li>
                 <li class="utilities"><a href="#">Utilities</a></li>
                 <li class="settings"><a href="#">Settings</a></li>
                 <li class="about"><a href="#">About</a></li>

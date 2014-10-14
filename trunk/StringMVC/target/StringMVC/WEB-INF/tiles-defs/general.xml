@@ -26,4 +26,9 @@
         <put-attribute name="body" value="/WEB-INF/pages/jobolizerBundleDetails.jsp"/>
     </definition>
 
+    <definition name="googleApi" extends="common">
+        <put-attribute name="title" value="Google API" />
+        <put-attribute name="body" value="/WEB-INF/pages/googleApi.jsp"/>
+    </definition>
+
 </tiles-definitions>

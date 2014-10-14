@@ -3,7 +3,7 @@ package com.softserveinc.Test;
 import com.softserveinc.Component.DBComponent;
 import com.softserveinc.Component.JobolizerComponent;
 import com.softserveinc.DAO.CommonUrlTableDAO;
-import com.softserveinc.DTO.JobolizerResultDTO;
+import com.softserveinc.DTO.SpiderResultDTO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class JobolizerMain {
             num++;
             url = url.replaceAll("jobbörse", "xn--jobbrse-d1a");
             try {
-                jobolizerComponent.collectURLData(url, num, new JobolizerResultDTO());
+                jobolizerComponent.collectURLData(url, num, new SpiderResultDTO());
             } catch (Exception e) {
                 System.out.println("Failed");
             }

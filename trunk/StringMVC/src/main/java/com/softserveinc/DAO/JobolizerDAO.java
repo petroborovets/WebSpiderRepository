@@ -2,7 +2,7 @@ package com.softserveinc.DAO;
 
 import com.softserveinc.Component.DBComponent;
 import com.softserveinc.Component.Jobolizer.JobolizerUtilities;
-import com.softserveinc.DTO.JobolizerResultDTO;
+import com.softserveinc.DTO.SpiderResultDTO;
 import com.softserveinc.Entity.JobolizerEntity;
 
 import java.sql.*;
@@ -159,18 +159,18 @@ public class JobolizerDAO {
         }
     }
 
-    public void addElement(JobolizerEntity jobolizerEntity, JobolizerResultDTO jobolizerResultDTO) throws SQLException {
+    public void addElement(JobolizerEntity jobolizerEntity, SpiderResultDTO spiderResultDTO) throws SQLException {
 
         System.out.println("Trying to add jobolizer to db:" + jobolizerEntity.getVacancyURL());
-        jobolizerResultDTO.setVacancyURL(jobolizerEntity.getVacancyURL());
+        spiderResultDTO.setVacancyURL(jobolizerEntity.getVacancyURL());
 
         if (!new JobolizerUtilities().isNotEmptyBundle(jobolizerEntity)) {
-            jobolizerResultDTO.setError(true);
-            jobolizerResultDTO.setErrorDescription("Error: Jobolizer vacancy is empty");
+            spiderResultDTO.setError(true);
+            spiderResultDTO.setErrorDescription("Error: Jobolizer vacancy is empty");
         }
 
 
-        if (isUnique(jobolizerEntity, jobolizerResultDTO)) {
+        if (isUnique(jobolizerEntity, spiderResultDTO)) {
             connection = new DBComponent().getConnection();
             statement = connection.createStatement();
             statement.execute(selectDatabase);
@@ -222,7 +222,7 @@ public class JobolizerDAO {
             resultSet.next();
 
             jobolizerEntity.setId(resultSet.getLong(1));
-            jobolizerResultDTO.setId(jobolizerEntity.getId());
+            spiderResultDTO.setId(jobolizerEntity.getId());
 
             System.out.println("jobolizerBundle (" + jobolizerEntity.getId() + ") added to DB");
         } else {
@@ -429,16 +429,7 @@ public class JobolizerDAO {
         return jobolizerEntityToReturn;
     }
 
-    private boolean isUnique(JobolizerEntity jobolizerEntityToAdd, JobolizerResultDTO jobolizerResultDTO) {
-
-        boolean jobTitle1Equal = false;
-        boolean jobTitle2Equal = false;
-        boolean positionEqual = false;
-        boolean employmentTypeEqual = false;
-        boolean companyNameEqual = false;
-        boolean emailsEqual = false;
-        boolean workingCountryEqual = false;
-        boolean cityEqual = false;
+    private boolean isUnique(JobolizerEntity jobolizerEntityToAdd, SpiderResultDTO spiderResultDTO) {
 
         ArrayList<JobolizerEntity> jobolizerBundlesInDB = null;
         try {
@@ -449,78 +440,12 @@ public class JobolizerDAO {
 
         for (JobolizerEntity jobolizerEntity : jobolizerBundlesInDB) {
 
-            // JobTitle1 check
-            if ((jobolizerEntityToAdd.getJobTitle1() == null && jobolizerEntity.getJobTitle1() == null))
-                jobTitle1Equal = true;
-            else if (jobolizerEntityToAdd.getJobTitle1() != null && jobolizerEntity.getJobTitle1() != null) {
-                if (jobolizerEntityToAdd.getJobTitle1().equals(jobolizerEntity.getJobTitle1()))
-                    jobTitle1Equal = true;
-            } else
-                jobTitle1Equal = false;
-            // JobTitle2 check
-            if ((jobolizerEntityToAdd.getJobTitle2() == null && jobolizerEntity.getJobTitle2() == null))
-                jobTitle2Equal = true;
-            else if (jobolizerEntityToAdd.getJobTitle2() != null && jobolizerEntity.getJobTitle2() != null) {
-                if (jobolizerEntityToAdd.getJobTitle2().equals(jobolizerEntity.getJobTitle2()))
-                    jobTitle2Equal = true;
-            } else
-                jobTitle2Equal = false;
-            // Position check
-            if ((jobolizerEntityToAdd.getPosition() == null && jobolizerEntity.getPosition() == null))
-                positionEqual = true;
-            else if (jobolizerEntityToAdd.getPosition() != null && jobolizerEntity.getPosition() != null) {
-                if (jobolizerEntityToAdd.getPosition().equals(jobolizerEntity.getPosition()))
-                    positionEqual = true;
-            } else
-                positionEqual = false;
-            // EmploymentType check
-            if ((jobolizerEntityToAdd.getEmploymentType() == null && jobolizerEntity.getEmploymentType() == null))
-                employmentTypeEqual = true;
-            else if (jobolizerEntityToAdd.getEmploymentType() != null && jobolizerEntity.getEmploymentType() != null) {
-                if (jobolizerEntityToAdd.getEmploymentType().equals(jobolizerEntity.getEmploymentType()))
-                    employmentTypeEqual = true;
-            } else
-                employmentTypeEqual = false;
-            // CompanyName check
-            if ((jobolizerEntityToAdd.getCompanyName() == null && jobolizerEntity.getCompanyName() == null))
-                companyNameEqual = true;
-            else if (jobolizerEntityToAdd.getCompanyName() != null && jobolizerEntity.getCompanyName() != null) {
-                if (jobolizerEntityToAdd.getCompanyName().equals(jobolizerEntity.getCompanyName()))
-                    companyNameEqual = true;
-            } else
-                companyNameEqual = false;
-            // Emails check
-            if ((jobolizerEntityToAdd.getEmails() == null && jobolizerEntity.getEmails() == null))
-                emailsEqual = true;
-            else if (jobolizerEntityToAdd.getEmails() != null && jobolizerEntity.getEmails() != null) {
-                if (jobolizerEntityToAdd.getEmails().equals(jobolizerEntity.getEmails()))
-                    emailsEqual = true;
-            } else
-                emailsEqual = false;
-            // WorkingCompany check
-            if ((jobolizerEntityToAdd.getWorkingCountry() == null && jobolizerEntity.getWorkingCountry() == null))
-                workingCountryEqual = true;
-            else if (jobolizerEntityToAdd.getWorkingCountry() != null && jobolizerEntity.getWorkingCountry() != null) {
-                if (jobolizerEntityToAdd.getWorkingCountry().equals(jobolizerEntity.getWorkingCountry()))
-                    workingCountryEqual = true;
-            } else
-                workingCountryEqual = false;
-            // City check
-            if ((jobolizerEntityToAdd.getCity() == null && jobolizerEntity.getCity() == null))
-                cityEqual = true;
-            else if (jobolizerEntityToAdd.getCity() != null && jobolizerEntity.getCity() != null) {
-                if (jobolizerEntityToAdd.getCity().equals(jobolizerEntity.getCity()))
-                    cityEqual = true;
-            } else
-                cityEqual = false;
+            String existingJobolizerEntityUrl = jobolizerEntity.getVacancyURL();
 
-            if (jobTitle1Equal && jobTitle2Equal &&
-                    positionEqual && employmentTypeEqual &&
-                    companyNameEqual && emailsEqual &&
-                    workingCountryEqual && cityEqual) {
-                jobolizerResultDTO.setId(jobolizerEntity.getId());
-                jobolizerResultDTO.setError(true);
-                jobolizerResultDTO.setErrorDescription("Vacancy already exists in db with id#("+jobolizerEntity.getId()+"). ");
+            if (jobolizerEntityToAdd.getVacancyURL().equals(existingJobolizerEntityUrl)) {
+                spiderResultDTO.setError(true);
+                spiderResultDTO.setErrorDescription("Vacancy already exists in db with id#("+jobolizerEntity.getId()+"). ");
+
                 return false;
             }
         }
@@ -528,98 +453,18 @@ public class JobolizerDAO {
         return true;
     }
     private boolean isUnique(JobolizerEntity jobolizerEntityToAdd) {
-
-        boolean jobTitle1Equal = false;
-        boolean jobTitle2Equal = false;
-        boolean positionEqual = false;
-        boolean employmentTypeEqual = false;
-        boolean companyNameEqual = false;
-        boolean emailsEqual = false;
-        boolean workingCountryEqual = false;
-        boolean cityEqual = false;
-
         ArrayList<JobolizerEntity> jobolizerBundlesInDB = null;
         try {
             jobolizerBundlesInDB = getAllElements();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         for (JobolizerEntity jobolizerEntity : jobolizerBundlesInDB) {
-
-            // JobTitle1 check
-            if ((jobolizerEntityToAdd.getJobTitle1() == null && jobolizerEntity.getJobTitle1() == null))
-                jobTitle1Equal = true;
-            else if (jobolizerEntityToAdd.getJobTitle1() != null && jobolizerEntity.getJobTitle1() != null) {
-                if (jobolizerEntityToAdd.getJobTitle1().equals(jobolizerEntity.getJobTitle1()))
-                    jobTitle1Equal = true;
-            } else
-                jobTitle1Equal = false;
-            // JobTitle2 check
-            if ((jobolizerEntityToAdd.getJobTitle2() == null && jobolizerEntity.getJobTitle2() == null))
-                jobTitle2Equal = true;
-            else if (jobolizerEntityToAdd.getJobTitle2() != null && jobolizerEntity.getJobTitle2() != null) {
-                if (jobolizerEntityToAdd.getJobTitle2().equals(jobolizerEntity.getJobTitle2()))
-                    jobTitle2Equal = true;
-            } else
-                jobTitle2Equal = false;
-            // Position check
-            if ((jobolizerEntityToAdd.getPosition() == null && jobolizerEntity.getPosition() == null))
-                positionEqual = true;
-            else if (jobolizerEntityToAdd.getPosition() != null && jobolizerEntity.getPosition() != null) {
-                if (jobolizerEntityToAdd.getPosition().equals(jobolizerEntity.getPosition()))
-                    positionEqual = true;
-            } else
-                positionEqual = false;
-            // EmploymentType check
-            if ((jobolizerEntityToAdd.getEmploymentType() == null && jobolizerEntity.getEmploymentType() == null))
-                employmentTypeEqual = true;
-            else if (jobolizerEntityToAdd.getEmploymentType() != null && jobolizerEntity.getEmploymentType() != null) {
-                if (jobolizerEntityToAdd.getEmploymentType().equals(jobolizerEntity.getEmploymentType()))
-                    employmentTypeEqual = true;
-            } else
-                employmentTypeEqual = false;
-            // CompanyName check
-            if ((jobolizerEntityToAdd.getCompanyName() == null && jobolizerEntity.getCompanyName() == null))
-                companyNameEqual = true;
-            else if (jobolizerEntityToAdd.getCompanyName() != null && jobolizerEntity.getCompanyName() != null) {
-                if (jobolizerEntityToAdd.getCompanyName().equals(jobolizerEntity.getCompanyName()))
-                    companyNameEqual = true;
-            } else
-                companyNameEqual = false;
-            // Emails check
-            if ((jobolizerEntityToAdd.getEmails() == null && jobolizerEntity.getEmails() == null))
-                emailsEqual = true;
-            else if (jobolizerEntityToAdd.getEmails() != null && jobolizerEntity.getEmails() != null) {
-                if (jobolizerEntityToAdd.getEmails().equals(jobolizerEntity.getEmails()))
-                    emailsEqual = true;
-            } else
-                emailsEqual = false;
-            // WorkingCompany check
-            if ((jobolizerEntityToAdd.getWorkingCountry() == null && jobolizerEntity.getWorkingCountry() == null))
-                workingCountryEqual = true;
-            else if (jobolizerEntityToAdd.getWorkingCountry() != null && jobolizerEntity.getWorkingCountry() != null) {
-                if (jobolizerEntityToAdd.getWorkingCountry().equals(jobolizerEntity.getWorkingCountry()))
-                    workingCountryEqual = true;
-            } else
-                workingCountryEqual = false;
-            // City check
-            if ((jobolizerEntityToAdd.getCity() == null && jobolizerEntity.getCity() == null))
-                cityEqual = true;
-            else if (jobolizerEntityToAdd.getCity() != null && jobolizerEntity.getCity() != null) {
-                if (jobolizerEntityToAdd.getCity().equals(jobolizerEntity.getCity()))
-                    cityEqual = true;
-            } else
-                cityEqual = false;
-
-            if (jobTitle1Equal && jobTitle2Equal &&
-                    positionEqual && employmentTypeEqual &&
-                    companyNameEqual && emailsEqual &&
-                    workingCountryEqual && cityEqual) {
+            String existingJobolizerEntityUrl = jobolizerEntity.getVacancyURL();
+            if (jobolizerEntityToAdd.getVacancyURL().equals(existingJobolizerEntityUrl)) {
                 return false;
             }
         }
-
         return true;
     }
 
